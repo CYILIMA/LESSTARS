@@ -18,7 +18,10 @@ class HomepagePhotoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'image_path' => 'homepage-photos/'.$this->faker->uuid().'.jpg',
+            'description' => $this->faker->sentence(8),
+            'display_order' => 0,
+            'status' => 'draft',
         ];
     }
 }

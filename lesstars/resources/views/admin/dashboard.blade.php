@@ -1,1 +1,8 @@
-<x-admin.layout title="Overview"><div class="admin-heading"><div><p class="eyebrow blue">DASHBOARD</p><h1>Good to see you.</h1></div><a class="button button-blue" href="{{ route('admin.events.create') }}">Create event <span>→</span></a></div><div class="admin-stats"><div><b>{{ $publishedCount }}</b><span>Published events</span></div><div><b>{{ $events->count() }}</b><span>Recent events</span></div></div><div class="admin-panel"><h2>Recent events</h2>@forelse($events as $event)<div class="admin-row"><div><b>{{ $event->title }}</b><span>{{ $event->starts_at->format('d M Y · H:i') }} · {{ ucfirst($event->status) }}</span></div><a href="{{ route('admin.events.edit',$event) }}">Edit →</a></div>@empty<p>No events yet. Start by publishing your first event.</p>@endforelse</div></x-admin.layout>
+<x-admin.layout title="Overview">
+    <div class="admin-heading">
+        <div><p class="eyebrow blue">DASHBOARD</p><h1>Good to see you.</h1></div>
+        <div class="admin-actions"><a class="button button-blue" href="{{ route('admin.homepage-photos.index') }}">Homepage photos <span>→</span></a><a class="button button-blue" href="{{ route('admin.events.create') }}">Create event <span>→</span></a></div>
+    </div>
+    <div class="admin-stats"><div><b>{{ $publishedCount }}</b><span>Published events</span></div><div><b>{{ $events->count() }}</b><span>Recent events</span></div></div>
+    <div class="admin-panel"><h2>Recent events</h2>@forelse($events as $event)<div class="admin-row"><div><b>{{ $event->title }}</b><span>{{ $event->starts_at->format('d M Y · H:i') }} · {{ ucfirst($event->status) }}</span></div><a href="{{ route('admin.events.edit', $event) }}">Edit →</a></div>@empty<p>No events yet. Start by publishing your first event.</p>@endforelse</div>
+</x-admin.layout>

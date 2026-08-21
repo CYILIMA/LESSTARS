@@ -12,11 +12,28 @@ class TeamMember extends Model
     /** @use HasFactory<\Database\Factories\TeamMemberFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'role', 'bio', 'email', 'phone', 'image_url', 'instagram_url', 'linkedin_url', 'display_order', 'status'];
+    public const CATEGORIES = [
+        'current_leadership' => 'Current Leadership',
+        'current_stars' => 'Current Stars',
+        'former_leadership' => 'Former Leadership',
+        'former_stars' => 'Former Stars',
+    ];
+
+    protected $fillable = ['name', 'role', 'bio', 'email', 'phone', 'image_url', 'instagram_url', 'linkedin_url', 'display_order', 'status', 'category'];
 
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', 'published');
+    }
+
+    public function scopeInCategory(Builder $query, string $category): Builder
+    {
+        return $query->where('category', $category);
+    }
+
+    public function getCategoryLabelAttribute(): string
+    {
+        return self::CATEGORIES[$this->category] ?? self::CATEGORIES['current_stars'];
     }
 
     public function getProfileImageUrlAttribute(): ?string

@@ -64,7 +64,11 @@ class AdminController extends Controller
             'instagram_url' => ['nullable', 'url'],
             'facebook_url' => ['nullable', 'url'],
             'donation_message' => ['nullable', 'string', 'max:500'],
+            'about_content' => ['nullable', 'string', 'max:5000'],
+            'mission_statement' => ['nullable', 'string', 'max:2000'],
+            'vision_statement' => ['nullable', 'string', 'max:2000'],
             'organisation_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'site_background' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:6144'],
         ]);
 
         foreach ($settings as $key => $value) {
@@ -72,6 +76,22 @@ class AdminController extends Controller
                 $path = $request->file('organisation_logo')->store('logos', 'public');
                 Setting::updateOrCreate(
                     ['key' => 'organisation_logo_path'],
+                    ['value' => $path],
+                );
+
+                continue;
+            }
+
+            if ($key === 'site_background' && $request->hasFile('site_background')) {
+                $previousPath = Setting::where('key', 'site_background_path')->value('value');
+
+                if ($previousPath) {
+                    Storage::disk('public')->delete($previousPath);
+                }
+
+                $path = $request->file('site_background')->store('site-backgrounds', 'public');
+                Setting::updateOrCreate(
+                    ['key' => 'site_background_path'],
                     ['value' => $path],
                 );
 

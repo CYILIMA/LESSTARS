@@ -28,6 +28,7 @@ class TeamMemberFactory extends Factory
             'linkedin_url' => fake()->url(),
             'display_order' => fake()->numberBetween(0, 10),
             'status' => 'draft',
+            'category' => 'current_stars',
         ];
     }
 }

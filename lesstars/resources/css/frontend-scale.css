@@ -1,0 +1,5 @@
+@media (min-width: 761px) {
+    html:has(body.site-body) {
+        zoom: 0.8;
+    }
+}

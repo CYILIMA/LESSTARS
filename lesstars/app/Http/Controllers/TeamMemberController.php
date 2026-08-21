@@ -61,6 +61,7 @@ class TeamMemberController extends Controller
             'linkedin_url' => ['nullable', 'url', 'max:2048'],
             'display_order' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'status' => ['required', 'in:draft,published'],
+            'category' => ['required', 'in:'.implode(',', array_keys(TeamMember::CATEGORIES))],
         ]);
 
         $data['display_order'] ??= 0;
