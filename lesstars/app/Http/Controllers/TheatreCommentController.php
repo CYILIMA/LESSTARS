@@ -15,12 +15,14 @@ class TheatreCommentController extends Controller
     public function approve(TheatreComment $comment)
     {
         $comment->update(['status' => 'approved']);
+
         return back()->with('success', 'Comment approved.');
     }
 
     public function reject(TheatreComment $comment)
     {
         $comment->update(['status' => 'rejected']);
+
         return back()->with('success', 'Comment rejected.');
     }
 
@@ -31,6 +33,7 @@ class TheatreCommentController extends Controller
             'name' => 'Les Stars Du Theatre',
             'status' => 'approved',
         ]);
+
         return back()->with('success', 'Reply published.');
     }
 }

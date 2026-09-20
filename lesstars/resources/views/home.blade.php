@@ -5,7 +5,7 @@
             <h1>Empowering<br>voices through<br>theaters.</h1>
             <p class="foundation-intro">Les Stars Du Theatre creates radio, stage and community experiences that give every story a chance to be heard.</p>
             <div class="foundation-actions">
-                <a class="foundation-button foundation-button-primary" href="{{ route('donate') }}">Donate Now</a>
+                <a class="foundation-button foundation-button-primary" href="{{ route('auth') }}">sign up/in</a>
                 <a class="foundation-button foundation-button-secondary" href="{{ route('about') }}">Learn About Us</a>
             </div>
         </div>
@@ -28,8 +28,51 @@
         </div>
     </section>
 
-    <section class="statement"><p class="eyebrow blue">WHO WE ARE</p><div><h2>We believe every voice deserves <em>a stage.</em></h2>
-    <p>Les Stars Du Theatre is a creative home for brave stories. We bring together artists, listeners and audiences through original radio plays, intimate live shows and workshops.</p><a class="arrow-link" href="{{ route('about') }}">Our story, in full <span>→</span></a></div>
+    <section class="home-events">
+        <header class="home-events-title" data-scroll-reveal><h2>What's Going On In Theatres</h2></header>
+        @php($featured = $events->shift())
+        @if($featured)
+            <div class="home-event-gallery">
+                <a class="home-event-featured" href="{{ route('events.show', $featured) }}">
+                    <span class="home-event-image-wrap">
+                        @if($featured->thumbnail_url || $featured->image_url)
+                            <img src="{{ $featured->thumbnail_url ?: $featured->image_url }}" alt="Image for {{ $featured->title }}">
+                        @else
+                            <span class="home-event-placeholder" aria-hidden="true">✦</span>
+                        @endif
+                    </span>
+                    <span class="home-event-featured-content">
+                        <span class="home-event-kicker">Latest event</span>
+                        <span class="home-event-date">{{ $featured->starts_at->format('d M Y · H:i') }}</span>
+                        <strong>{{ $featured->title }}</strong>
+                        <span class="home-event-featured-meta">{{ $featured->venue }} <b class="home-event-view">View Event</b></span>
+                    </span>
+                </a>
+                <div class="home-event-side-grid">
+                    @foreach($events->take(6) as $event)
+                        <a class="home-event-card" href="{{ route('events.show', $event) }}">
+                            <span class="home-event-image-wrap">
+                                @if($event->thumbnail_url || $event->image_url)
+                                    <img src="{{ $event->thumbnail_url ?: $event->image_url }}" alt="Image for {{ $event->title }}">
+                                @else
+                                    <span class="home-event-placeholder" aria-hidden="true">✦</span>
+                                @endif
+                            </span>
+                            <span class="home-event-content">
+                                <span class="home-event-date">{{ $event->starts_at->format('d M Y · H:i') }}</span>
+                                <strong>{{ $event->title }}</strong>
+                                <span>{{ $event->venue }} <b class="home-event-view">View Event</b></span>
+                            </span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+            @if($events->count() > 6)
+                <a class="home-events-more" href="{{ route('events') }}">View More Events <span aria-hidden="true">→</span></a>
+            @endif
+        @else
+            <p class="home-events-empty">No events have been published yet.</p>
+        @endif
     </section>
     <section class="numbers"><div><b>08</b><span>Years creating<br>with purpose</span></div><div><b>42</b><span>Original radio<br>productions</span></div><div><b>15K+</b><span>Audience members<br>reached yearly</span></div><div><b>27</b><span>Emerging artists<br>mentored</span></div></section>
 </x-site>

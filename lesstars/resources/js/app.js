@@ -5,6 +5,10 @@ import '../css/donations.css';
 import '../css/foundation-home.css';
 import '../css/theatres.css';
 import '../css/theatre-layout-fix.css';
+import '../css/event-layout.css';
+import '../css/event-detail.css';
+import '../css/event-cards.css';
+import '../css/event-ratio.css';
 
 const menuButton = document.querySelector('.menu-button');
 const menu = document.querySelector('.nav-links');
@@ -24,6 +28,35 @@ document.querySelectorAll('.amounts button').forEach(button => button.addEventLi
   const amount = button.textContent.trim();
   document.querySelector('.donate-button').innerHTML = `Donate ${amount === 'Other' ? 'now' : amount} <span>→</span>`;
 }));
+
+document.querySelectorAll('[data-thumbnail-editor]').forEach(editor => {
+  const input = editor.querySelector('[data-thumbnail-input]');
+  const preview = editor.querySelector('[data-thumbnail-preview]');
+  const selected = editor.querySelector('[data-thumbnail-selected]');
+
+  input?.addEventListener('change', () => {
+    const file = input.files?.[0];
+
+    if (!file) {
+      selected.textContent = 'No new image selected';
+      return;
+    }
+
+    selected.textContent = `Selected: ${file.name}`;
+
+    if (preview instanceof HTMLImageElement) {
+      preview.src = URL.createObjectURL(file);
+      return;
+    }
+
+    const image = document.createElement('img');
+    image.className = 'thumbnail-preview';
+    image.dataset.thumbnailPreview = '';
+    image.alt = `Preview of ${file.name}`;
+    image.src = URL.createObjectURL(file);
+    preview.replaceWith(image);
+  });
+});
 
 document.querySelectorAll('[data-homepage-slider]').forEach(slider => {
   const slides = [...slider.querySelectorAll('[data-homepage-slide]')];
@@ -52,3 +85,23 @@ document.querySelectorAll('[data-homepage-slider]').forEach(slider => {
   slider.querySelector('[data-slider-next]')?.addEventListener('click', () => showSlide((current + 1) % slides.length));
   window.setInterval(() => showSlide((current + 1) % slides.length), 5000);
 });
+
+document.documentElement.classList.add('scroll-reveal-ready');
+const scrollRevealItems = document.querySelectorAll('[data-scroll-reveal]');
+
+if ('IntersectionObserver' in window) {
+  const scrollRevealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) {
+        return;
+      }
+
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.2 });
+
+  scrollRevealItems.forEach(item => scrollRevealObserver.observe(item));
+} else {
+  scrollRevealItems.forEach(item => item.classList.add('is-visible'));
+}

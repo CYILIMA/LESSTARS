@@ -3,7 +3,13 @@
     <form class="admin-form" method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
         @csrf @method('PUT')
         <label>Organisation email<input type="email" name="organisation_email" value="{{ $settings['organisation_email'] ?? '' }}"></label>
-        <div class="form-grid"><label>Instagram URL<input type="url" name="instagram_url" value="{{ $settings['instagram_url'] ?? '' }}"></label><label>Facebook URL<input type="url" name="facebook_url" value="{{ $settings['facebook_url'] ?? '' }}"></label></div>
+        <div class="form-grid">
+            <label>Facebook URL<input type="url" name="facebook_url" value="{{ $settings['facebook_url'] ?? '' }}" placeholder="https://facebook.com/yourpage"></label>
+            <label>Instagram URL<input type="url" name="instagram_url" value="{{ $settings['instagram_url'] ?? '' }}" placeholder="https://instagram.com/yourpage"></label>
+            <label>Twitter / X URL<input type="url" name="twitter_url" value="{{ $settings['twitter_url'] ?? '' }}" placeholder="https://x.com/yourpage"></label>
+            <label>YouTube URL<input type="url" name="youtube_url" value="{{ $settings['youtube_url'] ?? '' }}" placeholder="https://youtube.com/@yourchannel"></label>
+            <label>WhatsApp URL<input type="url" name="whatsapp_url" value="{{ $settings['whatsapp_url'] ?? '' }}" placeholder="https://wa.me/27000000000"></label>
+        </div>
         <label>Organisation logo<input type="file" name="organisation_logo" accept="image/png,image/jpeg,image/webp"></label>
         @if(!empty($settings['organisation_logo_path']))<p class="form-hint">Current logo is stored and will appear in the header, footer, and other branded areas.</p>@endif
         <label>Website background image<input type="file" name="site_background" accept="image/png,image/jpeg,image/webp"><small>JPEG, PNG or WebP; maximum 6 MB. This image is shown behind all public website pages.</small></label>
