@@ -15,6 +15,12 @@
             <a href="{{ route('admin.theatre-comments.index') }}">Theatre comments</a>
             <a href="{{ route('admin.team-members.index') }}">Team members</a>
             <a href="{{ route('admin.homepage-photos.index') }}">Homepage photos</a>
+            <a href="{{ route('admin.members.index') }}">Member Stars</a>
+            <a href="{{ route('admin.registered-users.index') }}">Website sign-ups</a>
+            <a href="{{ route('admin.membership-applications.index') }}">Member applications</a>
+            <a href="{{ route('admin.attendance.index') }}">Attendance</a>
+            <a href="{{ route('admin.contributions.index') }}">Member wallet</a>
+            <a href="{{ route('admin.cacahuete.index') }}">Cacahuète</a>
             <a href="{{ route('admin.settings') }}">Organisation settings</a>
             <a href="{{ route('home') }}" target="_blank">View public site ↗</a>
         </nav>

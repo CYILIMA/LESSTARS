@@ -29,6 +29,54 @@ document.querySelectorAll('.amounts button').forEach(button => button.addEventLi
   document.querySelector('.donate-button').innerHTML = `Donate ${amount === 'Other' ? 'now' : amount} <span>→</span>`;
 }));
 
+document.querySelectorAll('input[type="password"]').forEach(input => {
+  const wrapper = document.createElement('span');
+  wrapper.className = 'password-field';
+  input.before(wrapper);
+  wrapper.append(input);
+
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'password-toggle';
+  toggle.setAttribute('aria-label', 'Show password');
+  toggle.setAttribute('aria-pressed', 'false');
+  toggle.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>';
+  wrapper.append(toggle);
+
+  toggle.addEventListener('click', () => {
+    const visible = input.type === 'text';
+    input.type = visible ? 'password' : 'text';
+    toggle.setAttribute('aria-label', visible ? 'Show password' : 'Hide password');
+    toggle.setAttribute('aria-pressed', String(!visible));
+    toggle.classList.toggle('is-visible', !visible);
+  });
+});
+
+document.querySelectorAll('[data-question-list]').forEach(questionList => {
+  const template = document.querySelector('[data-question-template]');
+  const addButton = document.querySelector('[data-add-question]');
+  let index = 0;
+
+  const addQuestion = () => {
+    if (!(template instanceof HTMLTemplateElement)) return;
+
+    const question = template.content.firstElementChild.cloneNode(true);
+    question.querySelectorAll('[data-field]').forEach(field => {
+      const key = field.dataset.field;
+      field.name = `questions[${index}][${key}]`;
+    });
+    question.querySelector('[data-field="type"]')?.addEventListener('change', event => {
+      question.querySelector('[data-options-field]').hidden = event.target.value !== 'choice';
+    });
+    question.querySelector('.remove-question')?.addEventListener('click', () => question.remove());
+    questionList.append(question);
+    index += 1;
+  };
+
+  addButton?.addEventListener('click', addQuestion);
+  addQuestion();
+});
+
 document.querySelectorAll('[data-thumbnail-editor]').forEach(editor => {
   const input = editor.querySelector('[data-thumbnail-input]');
   const preview = editor.querySelector('[data-thumbnail-preview]');

@@ -1,13 +1,22 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminMemberController;
 use App\Http\Controllers\AdminTheatreController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CacahueteController;
+use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomepagePhotoController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MembershipApplicationController;
+use App\Http\Controllers\MembershipApplicationFormController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\TheatreCommentController;
 use App\Http\Controllers\TheatreController;
+use App\Http\Middleware\EnsureApprovedMember;
+use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Models\Event;
 use App\Models\HomepagePhoto;
 use App\Models\Setting;
@@ -111,6 +120,18 @@ Route::post('/sign-out', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
+Route::get('/apply/{form:public_token}', [MembershipApplicationController::class, 'create'])->name('membership-applications.create');
+Route::post('/apply/{form:public_token}', [MembershipApplicationController::class, 'store'])->middleware('throttle:10,1')->name('membership-applications.store');
+Route::get('/application-submitted', [MembershipApplicationController::class, 'thankYou'])->name('membership-applications.thank-you');
+
+Route::get('/members', [MemberController::class, 'create'])->name('members.login');
+Route::post('/members', [MemberController::class, 'store'])->middleware('throttle:10,1')->name('members.login.store');
+Route::middleware(['auth', EnsureApprovedMember::class])->prefix('members')->name('members.')->group(function (): void {
+    Route::get('/dashboard', [MemberController::class, 'dashboard'])->name('dashboard');
+    Route::post('/logout', [MemberController::class, 'destroy'])->name('logout');
+    Route::post('/cacahuete/{participant}/pick', [CacahueteController::class, 'pick'])->name('cacahuete.pick');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Events Routes
@@ -165,6 +186,7 @@ Route::post('/admin/logout', [AdminController::class, 'destroy'])
 */
 
 Route::middleware('auth')
+    ->middleware(EnsureUserIsAdmin::class)
     ->prefix('admin')
     ->name('admin.')
     ->group(function (): void {
@@ -174,6 +196,9 @@ Route::middleware('auth')
         */
         Route::get('/', [AdminController::class, 'index'])
             ->name('dashboard');
+
+        Route::get('/registered-users', [AdminController::class, 'registeredUsers'])
+            ->name('registered-users.index');
 
         /*
         | Events
@@ -221,6 +246,30 @@ Route::middleware('auth')
         */
         Route::resource('homepage-photos', HomepagePhotoController::class)
             ->except('show');
+
+        Route::resource('members', AdminMemberController::class)
+            ->except('show');
+
+        Route::resource('attendance', AttendanceController::class)
+            ->only(['index', 'create', 'store', 'destroy']);
+
+        Route::resource('contributions', ContributionController::class)
+            ->except('show');
+
+        Route::get('membership-applications', [MembershipApplicationFormController::class, 'index'])->name('membership-applications.index');
+        Route::get('membership-applications/create', [MembershipApplicationFormController::class, 'create'])->name('membership-applications.create');
+        Route::post('membership-applications', [MembershipApplicationFormController::class, 'store'])->name('membership-applications.store');
+        Route::patch('membership-applications/{membershipApplication}/toggle', [MembershipApplicationFormController::class, 'toggle'])->name('membership-applications.toggle');
+        Route::get('membership-applications/export', [MembershipApplicationFormController::class, 'export'])->name('membership-applications.export');
+        Route::get('membership-applications/{membershipApplication}/submissions', [MembershipApplicationFormController::class, 'applications'])->name('membership-applications.submissions');
+        Route::get('member-applications/{application}', [MembershipApplicationFormController::class, 'showApplication'])->name('member-applications.show');
+        Route::patch('member-applications/{application}/review', [MembershipApplicationFormController::class, 'review'])->name('member-applications.review');
+
+        Route::get('cacahuete', [CacahueteController::class, 'index'])->name('cacahuete.index');
+        Route::get('cacahuete/create', [CacahueteController::class, 'create'])->name('cacahuete.create');
+        Route::post('cacahuete', [CacahueteController::class, 'store'])->name('cacahuete.store');
+        Route::patch('cacahuete/{cacahuete}/toggle', [CacahueteController::class, 'toggle'])->name('cacahuete.toggle');
+        Route::delete('cacahuete/{cacahuete}', [CacahueteController::class, 'destroy'])->name('cacahuete.destroy');
 
         /*
         | Settings

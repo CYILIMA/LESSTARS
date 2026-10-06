@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         User::updateOrCreate(['email' => 'admin@lesstars.org'], [
             'name' => 'Les Stars Admin',
             'password' => 'ChangeMe123!',
+            'is_admin' => true,
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +23,7 @@ class AdminController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($credentials + ['is_admin' => true], true)) {
             $request->session()->regenerate();
 
             return redirect()->intended(route('admin.dashboard'));
@@ -47,6 +48,17 @@ class AdminController extends Controller
         return view('admin.dashboard', [
             'events' => Event::latest('starts_at')->take(5)->get(),
             'publishedCount' => Event::published()->count(),
+        ]);
+    }
+
+    public function registeredUsers()
+    {
+        return view('admin.registered-users', [
+            'users' => User::query()
+                ->where('is_admin', false)
+                ->whereNull('registration_number')
+                ->latest()
+                ->paginate(20),
         ]);
     }
 

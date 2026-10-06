@@ -11,7 +11,16 @@
 
         <div class="event-detail-grid">
             <div>
-                @if($event->body)<div class="event-detail-body"><p>{{ $event->body }}</p></div>@endif
+                @if($event->body)
+                    @php($paragraphs = preg_split('/\R\s*\R/', trim($event->body)))
+                    <div class="event-detail-body">
+                        @foreach($paragraphs as $paragraph)
+                            @if(trim($paragraph) !== '')
+                                <p>{!! nl2br(e(trim($paragraph))) !!}</p>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
                 @if($event->author_name)<p class="event-detail-author">Written by <strong>{{ $event->author_name }}</strong></p>@endif
             </div>
         </div>

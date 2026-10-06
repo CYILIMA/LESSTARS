@@ -74,5 +74,5 @@
             <p class="home-events-empty">No events have been published yet.</p>
         @endif
     </section>
-    <section class="numbers"><div><b>08</b><span>Years creating<br>with purpose</span></div><div><b>42</b><span>Original radio<br>productions</span></div><div><b>15K+</b><span>Audience members<br>reached yearly</span></div><div><b>27</b><span>Emerging artists<br>mentored</span></div></section>
+    <section class="numbers"><div><b>30+</b><span>Years creating<br>with purpose</span></div><div><b>42</b><span>Original radio<br>productions</span></div><div><b>15K+</b><span>Audience members<br>reached yearly</span></div><div><b>27</b><span>Emerging artists<br>mentored</span></div></section>
 </x-site>

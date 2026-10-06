@@ -47,6 +47,7 @@
             </div>
             <a class="{{ request()->routeIs('activities') ? 'active' : '' }}" href="{{ route('activities') }}">Activities</a>
             <a class="{{ request()->routeIs('events') ? 'active' : '' }}" href="{{ route('events') }}">Events</a>
+            <a class="{{ request()->routeIs('members.*') ? 'active' : '' }}" href="{{ route('members.login') }}">Members</a>
             <a class="nav-donate" href="{{ route('auth') }}">sign up/in <span>↗</span></a>
         </nav>
     </header>
