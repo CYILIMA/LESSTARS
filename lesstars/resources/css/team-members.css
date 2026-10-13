@@ -1,0 +1,36 @@
+.team-member-photo {
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+  background: #e6eaf0;
+}
+
+.team-member-photo > img,
+.team-member-photo > .team-member-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-member-photo > img {
+  filter: none;
+}
+
+.team-member-photo > .team-member-placeholder {
+  display: grid;
+  place-items: center;
+  background: #e6eaf0;
+  color: #071329;
+  font: 500 72px 'Playfair Display', serif;
+  letter-spacing: -.08em;
+}
+
+.team-member-photo > .team-member-placeholder[hidden] {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .team-member-photo {
+    height: 320px;
+  }
+}

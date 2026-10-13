@@ -104,12 +104,22 @@ class CacahueteController extends Controller
     private function derangement(array $participantIds): array
     {
         do {
-            $recipientIds = $participantIds;
-            shuffle($recipientIds);
+            $recipientIds = $this->randomOrder($participantIds);
         } while (collect($participantIds)->values()->contains(
             fn (int $participantId, int $index): bool => $participantId === $recipientIds[$index],
         ));
 
         return $recipientIds;
+    }
+
+    /** @param list<int> $participantIds @return list<int> */
+    private function randomOrder(array $participantIds): array
+    {
+        for ($index = count($participantIds) - 1; $index > 0; $index--) {
+            $randomIndex = random_int(0, $index);
+            [$participantIds[$index], $participantIds[$randomIndex]] = [$participantIds[$randomIndex], $participantIds[$index]];
+        }
+
+        return $participantIds;
     }
 }

@@ -72,28 +72,33 @@ Route::get('/team/{category}', function (string $category) {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/activities', [TheatreController::class, 'index'])
-    ->name('activities');
+Route::middleware('auth')->group(function (): void {
+    Route::get('/activities', [TheatreController::class, 'index'])
+        ->name('activities');
 
-Route::get('/activities/{id}', function (int $id) {
-    return redirect()->route(
-        'theatres.show',
-        Theatre::findOrFail($id)
-    );
-})->whereNumber('id')
-    ->name('theatres.legacy');
+    Route::get('/activities/{id}', function (int $id) {
+        return redirect()->route(
+            'theatres.show',
+            Theatre::findOrFail($id)
+        );
+    })->whereNumber('id')
+        ->name('theatres.legacy');
 
-Route::get('/activities/{theatre}', [TheatreController::class, 'show'])
-    ->name('theatres.show');
+    Route::get('/activities/{theatre}', [TheatreController::class, 'show'])
+        ->name('theatres.show');
 
-Route::get('/activities/{theatre}/download', [TheatreController::class, 'download'])
-    ->name('theatres.download');
+    Route::get('/activities/{theatre}/audio', [TheatreController::class, 'audio'])
+        ->name('theatres.audio');
 
-Route::post(
-    '/activities/{theatre}/comments',
-    [TheatreController::class, 'comment']
-)->middleware('throttle:10,1')
-    ->name('theatres.comments.store');
+    Route::get('/activities/{theatre}/download', [TheatreController::class, 'download'])
+        ->name('theatres.download');
+
+    Route::post(
+        '/activities/{theatre}/comments',
+        [TheatreController::class, 'comment']
+    )->middleware('throttle:10,1')
+        ->name('theatres.comments.store');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -124,8 +129,8 @@ Route::get('/apply/{form:public_token}', [MembershipApplicationController::class
 Route::post('/apply/{form:public_token}', [MembershipApplicationController::class, 'store'])->middleware('throttle:10,1')->name('membership-applications.store');
 Route::get('/application-submitted', [MembershipApplicationController::class, 'thankYou'])->name('membership-applications.thank-you');
 
-Route::get('/members', [MemberController::class, 'create'])->name('members.login');
-Route::post('/members', [MemberController::class, 'store'])->middleware('throttle:10,1')->name('members.login.store');
+Route::get('/members', [MemberController::class, 'create'])->middleware('auth')->name('members.login');
+Route::post('/members', [MemberController::class, 'store'])->middleware(['auth', 'throttle:10,1'])->name('members.login.store');
 Route::middleware(['auth', EnsureApprovedMember::class])->prefix('members')->name('members.')->group(function (): void {
     Route::get('/dashboard', [MemberController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [MemberController::class, 'destroy'])->name('logout');

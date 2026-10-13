@@ -18,7 +18,7 @@
                     <div class="cacahuete-reveal"><span>YOUR GIFT RECIPIENT</span><h3>{{ $entry->recipient->name }}</h3><a href="mailto:{{ $entry->recipient->email }}">{{ $entry->recipient->email }}</a><p>This is your one private Cacahuète draw. Please keep the surprise until gift day.</p></div>
                 @else
                     <p class="cacahuete-instruction">Choose one gift. It will reveal the person you are giving a gift to. Your choice is final.</p>
-                    <div class="gift-grid">@for($gift = 1; $gift <= $entry->game->participants_count; $gift++)<form method="POST" action="{{ route('members.cacahuete.pick', $entry) }}">@csrf<button type="submit" class="gift-button" aria-label="Open gift {{ $gift }}"><span>🎁</span><small>Gift {{ $gift }}</small></button></form>@endfor</div>
+                    <div class="gift-grid">@for($gift = 1; $gift <= $entry->game->participants_count; $gift++)<form method="POST" action="{{ route('members.cacahuete.pick', $entry) }}">@csrf<button type="submit" class="gift-button" aria-label="Open a gift"><span>🎁</span></button></form>@endfor</div>
                 @endif
             </section>
         @endforeach

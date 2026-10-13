@@ -24,7 +24,18 @@ class AdminMemberController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        User::create($this->validatedMember($request) + ['password' => Str::random(40)]);
+        $existingUser = User::query()
+            ->whereRaw('LOWER(email) = ?', [strtolower($request->string('email')->value())])
+            ->first();
+        $memberData = $this->validatedMember($request, $existingUser);
+
+        if ($existingUser) {
+            $existingUser->update($memberData);
+
+            return redirect()->route('admin.members.index')->with('success', 'Existing user account upgraded to Member Star.');
+        }
+
+        User::create($memberData + ['password' => Str::random(40)]);
 
         return redirect()->route('admin.members.index')->with('success', 'Member Star added. Approve them when their membership is current.');
     }
@@ -51,11 +62,17 @@ class AdminMemberController extends Controller
     /** @return array<string, mixed> */
     private function validatedMember(Request $request, ?User $member = null): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'.($member ? ','.$member->id : '')],
             'registration_number' => ['required', 'string', 'max:255', 'unique:users,registration_number'.($member ? ','.$member->id : '')],
-            'is_member_approved' => ['nullable', 'boolean'],
-        ]) + ['is_member_approved' => $request->boolean('is_member_approved')];
+            'member_category' => ['nullable', 'in:current,former'],
+        ]);
+
+        $data['email'] = strtolower($data['email']);
+        $data['member_category'] = $data['member_category'] ?? null;
+        $data['is_member_approved'] = $data['member_category'] !== null;
+
+        return $data;
     }
 }

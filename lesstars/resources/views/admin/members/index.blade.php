@@ -3,7 +3,7 @@
     <section class="admin-panel">
         <h2>Membership approvals</h2>
         @forelse ($members as $member)
-            <div class="admin-row"><div><b>{{ $member->name }}</b><span>{{ $member->email }} · Reg. {{ $member->registration_number }} · {{ $member->is_member_approved ? 'Approved' : 'Not approved' }}</span></div><div class="row-actions"><a href="{{ route('admin.members.edit', $member) }}">Edit</a><form method="POST" action="{{ route('admin.members.destroy', $member) }}">@csrf @method('DELETE')<button onclick="return confirm('Remove this member record?')">Remove</button></form></div></div>
+            <div class="admin-row"><div><b>{{ $member->name }}</b><span>{{ $member->email }} · Reg. {{ $member->registration_number }} · @switch($member->member_category) @case('current') Current Member Star @break @case('former') Former Member Star @break @default Not approved @endswitch</span></div><div class="row-actions"><a href="{{ route('admin.members.edit', $member) }}">Edit</a><form method="POST" action="{{ route('admin.members.destroy', $member) }}">@csrf @method('DELETE')<button onclick="return confirm('Remove this member record?')">Remove</button></form></div></div>
         @empty
             <p>No Member Stars have been added yet.</p>
         @endforelse

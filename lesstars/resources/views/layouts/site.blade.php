@@ -38,17 +38,25 @@
             <a class="{{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
             <a class="{{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a>
             <div class="nav-dropdown {{ request()->routeIs('team*') ? 'active' : '' }}">
-                <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="team-menu">Our Team <span aria-hidden="true">⌄</span></button>
+                <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="team-menu">Our Team</button>
                 <div class="nav-dropdown-menu" id="team-menu">
                     @foreach (App\Models\TeamMember::CATEGORIES as $category => $label)
                         <a class="{{ request()->routeIs('team.category') && request()->route('category') === $category ? 'active' : '' }}" href="{{ route('team.category', $category) }}">{{ $label }}</a>
                     @endforeach
                 </div>
             </div>
-            <a class="{{ request()->routeIs('activities') ? 'active' : '' }}" href="{{ route('activities') }}">Activities</a>
+            <a class="{{ request()->routeIs('activities', 'theatres.*') ? 'active' : '' }}" href="{{ route('activities') }}">Activities</a>
             <a class="{{ request()->routeIs('events') ? 'active' : '' }}" href="{{ route('events') }}">Events</a>
             <a class="{{ request()->routeIs('members.*') ? 'active' : '' }}" href="{{ route('members.login') }}">Members</a>
-            <a class="nav-donate" href="{{ route('auth') }}">sign up/in <span>↗</span></a>
+            @auth
+                <span class="nav-greeting">Hi, {{ str(auth()->user()->name)->squish()->before(' ') }}</span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="nav-sign-out" type="submit">Sign out</button>
+                </form>
+            @else
+                <a class="nav-donate" href="{{ route('auth') }}">sign up/in <span>↗</span></a>
+            @endauth
         </nav>
     </header>
     <main>{{ $slot }}</main>

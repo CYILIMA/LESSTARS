@@ -31,10 +31,11 @@
                 <h2>Sign up</h2>
                 <label>Full name<input name="name" value="{{ old('name') }}" autocomplete="name" required autofocus></label>
                 <label>Email address<input type="email" name="register_email" value="{{ old('register_email') }}" autocomplete="email" required></label>
+                <label>Member registration number <span>(if you are already a Member Star)</span><input name="registration_number" value="{{ old('registration_number') }}" autocomplete="off"></label>
                 <label>Password<input type="password" name="password" autocomplete="new-password" required></label>
                 <label>Confirm password<input type="password" name="password_confirmation" autocomplete="new-password" required></label>
-                @if ($errors->has('name') || $errors->has('register_email') || $errors->has('password'))
-                    <p class="form-error">{{ $errors->first('name') ?: $errors->first('register_email') ?: $errors->first('password') }}</p>
+                @if ($errors->has('name') || $errors->has('register_email') || $errors->has('registration_number') || $errors->has('password'))
+                    <p class="form-error">{{ $errors->first('name') ?: $errors->first('register_email') ?: $errors->first('registration_number') ?: $errors->first('password') }}</p>
                 @endif
                 <button class="button button-blue" type="submit">Create account <span>→</span></button>
                 <p class="auth-switch">Already have an account? <a href="{{ route('auth.login') }}">Sign in</a></p>

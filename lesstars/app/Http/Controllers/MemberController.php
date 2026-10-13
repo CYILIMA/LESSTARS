@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\CacahueteParticipant;
 use App\Models\ContributionPayment;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,8 +13,12 @@ use Illuminate\View\View;
 
 class MemberController extends Controller
 {
-    public function create(): View
+    public function create(Request $request): View|RedirectResponse
     {
+        if ($request->user()?->is_member_approved && $request->session()->get('member_dashboard_verified') === $request->user()->id) {
+            return redirect()->route('members.dashboard');
+        }
+
         return view('members.login');
     }
 
@@ -25,21 +28,17 @@ class MemberController extends Controller
             'member_email' => ['required', 'email'],
             'registration_number' => ['required', 'string', 'max:255'],
         ]);
+        $member = $request->user();
 
-        $member = User::query()
-            ->where('email', $credentials['member_email'])
-            ->where('registration_number', $credentials['registration_number'])
-            ->where('is_member_approved', true)
-            ->first();
-
-        if (! $member) {
+        if (! $member->is_member_approved
+            || strtolower($member->email) !== strtolower($credentials['member_email'])
+            || ! hash_equals($member->registration_number ?? '', $credentials['registration_number'])) {
             return back()
-                ->withErrors(['member_email' => 'We could not verify an approved Star membership with those details.'])
+                ->withErrors(['member_email' => 'These credentials do not match an approved Member Star account.'])
                 ->onlyInput('member_email');
         }
 
-        Auth::login($member);
-        $request->session()->regenerate();
+        $request->session()->put('member_dashboard_verified', $member->id);
 
         return redirect()->route('members.dashboard');
     }

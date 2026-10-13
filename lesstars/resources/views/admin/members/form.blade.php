@@ -5,7 +5,13 @@
         <label>Full name<input name="name" value="{{ old('name', $member->name) }}" required></label>
         <label>Email address<input type="email" name="email" value="{{ old('email', $member->email) }}" required></label>
         <label>Registration number<input name="registration_number" value="{{ old('registration_number', $member->registration_number) }}" required></label>
-        <label class="remember"><input type="checkbox" name="is_member_approved" value="1" @checked(old('is_member_approved', $member->is_member_approved))> Approved current Member Star</label>
+        <label>Membership approval
+            <select name="member_category">
+                <option value="" @selected(old('member_category', $member->member_category) === null)>Not approved</option>
+                <option value="current" @selected(old('member_category', $member->member_category) === 'current')>Current Member Star</option>
+                <option value="former" @selected(old('member_category', $member->member_category) === 'former')>Former Member Star</option>
+            </select>
+        </label>
         @if($errors->any())<p class="form-error">{{ $errors->first() }}</p>@endif
         <button class="button button-blue" type="submit">{{ $member->exists ? 'Save member' : 'Add member' }} <span>→</span></button>
     </form>

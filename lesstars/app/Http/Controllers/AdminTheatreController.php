@@ -39,7 +39,8 @@ class AdminTheatreController extends Controller
 
     public function destroy(Theatre $theatre)
     {
-        Storage::disk('public')->delete([$theatre->thumbnail_path, $theatre->audio_path]);
+        Storage::disk('public')->delete($theatre->thumbnail_path);
+        Storage::disk('local')->delete($theatre->audio_path);
         $theatre->delete();
 
         return back()->with('success', 'Theatre audio removed.');
@@ -56,12 +57,15 @@ class AdminTheatreController extends Controller
         ]);
         unset($data['thumbnail'], $data['audio']);
 
-        foreach (['thumbnail' => 'thumbnail_path', 'audio' => 'audio_path'] as $input => $column) {
+        foreach ([
+            'thumbnail' => ['thumbnail_path', 'public'],
+            'audio' => ['audio_path', 'local'],
+        ] as $input => [$column, $disk]) {
             if ($request->hasFile($input)) {
                 if ($theatre?->{$column}) {
-                    Storage::disk('public')->delete($theatre->{$column});
+                    Storage::disk($disk)->delete($theatre->{$column});
                 }
-                $data[$column] = $request->file($input)->store('theatres', 'public');
+                $data[$column] = $request->file($input)->store('theatres', $disk);
             }
         }
 

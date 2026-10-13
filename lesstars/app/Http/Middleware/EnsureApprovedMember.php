@@ -15,9 +15,10 @@ class EnsureApprovedMember
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()?->is_member_approved) {
+        if (! $request->user()?->is_member_approved
+            || $request->session()->get('member_dashboard_verified') !== $request->user()->id) {
             return redirect()->route('members.login')
-                ->withErrors(['member_email' => 'Your membership is not currently approved.']);
+                ->withErrors(['member_email' => 'Enter your email and registration number to access the Member Dashboard.']);
         }
 
         return $next($request);

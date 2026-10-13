@@ -25,11 +25,18 @@ class TheatreController extends Controller
         ]);
     }
 
+    public function audio(Theatre $theatre)
+    {
+        abort_unless($theatre->status === 'published' && $theatre->audio_path && Storage::disk('local')->exists($theatre->audio_path), 404);
+
+        return response()->file(Storage::disk('local')->path($theatre->audio_path));
+    }
+
     public function download(Theatre $theatre)
     {
-        abort_unless($theatre->status === 'published' && $theatre->audio_path && Storage::disk('public')->exists($theatre->audio_path), 404);
+        abort_unless($theatre->status === 'published' && $theatre->audio_path && Storage::disk('local')->exists($theatre->audio_path), 404);
 
-        return Storage::disk('public')->download($theatre->audio_path, str($theatre->title)->slug().'.'.pathinfo($theatre->audio_path, PATHINFO_EXTENSION));
+        return Storage::disk('local')->download($theatre->audio_path, str($theatre->title)->slug().'.'.pathinfo($theatre->audio_path, PATHINFO_EXTENSION));
     }
 
     public function comment(Request $request, Theatre $theatre)

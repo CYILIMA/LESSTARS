@@ -23,7 +23,9 @@ test('cacahuete assigns every player a different recipient and permits only one 
     $this->actingAs($amina)->get(route('members.dashboard'))
         ->assertOk()
         ->assertSee('Holiday Cacahuète')
-        ->assertSee('2 gifts in the draw');
+        ->assertSee('2 gifts in the draw')
+        ->assertDontSee('Gift 1')
+        ->assertDontSee('Gift 2');
 
     $this->actingAs($amina)->post(route('members.cacahuete.pick', $aminaEntry))
         ->assertRedirect(route('members.dashboard'));

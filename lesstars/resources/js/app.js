@@ -9,6 +9,7 @@ import '../css/event-layout.css';
 import '../css/event-detail.css';
 import '../css/event-cards.css';
 import '../css/event-ratio.css';
+import '../css/team-members.css';
 
 const menuButton = document.querySelector('.menu-button');
 const menu = document.querySelector('.nav-links');
@@ -22,6 +23,24 @@ document.querySelectorAll('.nav-dropdown-trigger').forEach(trigger => trigger.ad
   const open = dropdown.classList.toggle('is-open');
   trigger.setAttribute('aria-expanded', open);
 }));
+
+document.querySelectorAll('[data-team-member-image]').forEach(image => {
+  const showFallback = () => {
+    image.hidden = true;
+    const fallback = image.parentElement?.querySelector('[data-team-member-fallback]');
+
+    if (fallback) {
+      fallback.hidden = false;
+    }
+  };
+
+  image.addEventListener('error', showFallback, { once: true });
+
+  if (image.complete && image.naturalWidth === 0) {
+    showFallback();
+  }
+});
+
 document.querySelectorAll('.amounts button').forEach(button => button.addEventListener('click', () => {
   document.querySelectorAll('.amounts button').forEach(item => item.classList.remove('chosen'));
   button.classList.add('chosen');

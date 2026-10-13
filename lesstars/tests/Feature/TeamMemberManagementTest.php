@@ -24,6 +24,21 @@ it('shows only published team members on their public category page', function (
         ->assertDontSee('Private Draft');
 });
 
+it('renders an initials fallback for team members whose image cannot load', function (): void {
+    TeamMember::factory()->create([
+        'name' => 'Naledi Mokoena',
+        'status' => 'published',
+        'category' => 'current_stars',
+        'image_url' => 'team-members/missing.jpg',
+    ]);
+
+    $this->get(route('team.category', 'current_stars'))
+        ->assertOk()
+        ->assertSee('data-team-member-image', false)
+        ->assertSee('data-team-member-fallback', false)
+        ->assertSee('>NM</div>', false);
+});
+
 it('allows an admin to add a team member', function (): void {
     $admin = User::factory()->create();
     Storage::fake('public');
